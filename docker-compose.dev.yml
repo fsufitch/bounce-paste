@@ -1,0 +1,26 @@
+services:
+  devcontainer:
+    build:
+      context: .
+      target: devcontainer
+    volumes:
+      - ./:/bounce-paste
+    networks:
+      - bounce-dev
+
+  rabbitmq:
+    extends:
+      file: docker-compose.yml
+      service: rabbitmq
+    networks:
+      - bounce-dev
+
+  db:
+    extends:
+      file: docker-compose.yml
+      service: db
+    networks:
+      - bounce-dev
+
+networks:
+  bounce-dev:

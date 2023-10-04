@@ -1,0 +1,15 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.12
+    hostname: rabbitmq
+    environment:
+      - RABBITMQ_NODENAME=rabbit@rabbitmq
+      - RABBITMQ_DEFAULT_USER=bouncepaste
+      - RABBITMQ_DEFAULT_PASSWORD=notforprod
+
+  db:
+    image: postgres:16
+    environment:
+      - POSTGRES_USER=bouncepaste
+      - POSTGRES_PASSWORD=notforprod
+      - POSTGRES_DB=bouncepaste

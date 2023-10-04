@@ -1,0 +1,17 @@
+bash-completion
+curl
+file
+git
+gzip
+gnupg2
+hostname
+htop
+man-db
+net-tools
+python3
+protobuf-compiler
+ssh
+sudo
+tar
+vim
+xzip
