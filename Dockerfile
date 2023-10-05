@@ -42,6 +42,10 @@ COPY --from=golang_base /usr/local /usr/local/
 COPY --from=golang_base /go /go
 ENV PATH=/usr/local/go/bin:/go/bin:$PATH
 
+# Get rid of the ubuntu user and group
+# See: https://github.com/microsoft/vscode-remote-release/issues/7284
+RUN userdel ubuntu
+
 # Set up the developer user
 RUN useradd -ms /bin/bash developer
 RUN echo "developer ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/developer
@@ -49,7 +53,7 @@ WORKDIR /home/developer
 USER developer
 
 # Set up developer custom configs
-COPY .devcontainer/bashrc.d /home/developer/.bashrc.d
+COPY --chown=developer .devcontainer/bashrc.d /home/developer/.bashrc.d
 
 CMD [ "echo", "devcontainer is not runnable like this"]
 
