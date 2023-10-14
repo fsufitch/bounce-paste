@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+message ComponentIdentifier {
+    string id = 1;
+    ComponentRole role = 2;
+    string description = 3;
+}
+
+enum ComponentRole {
+    UNKNOWN = 0;
+    WEB_UI = 1;
+    WEB_API = 2;
+    PASTE_NODE = 3;
+    TRANSFER_NEGOTIATOR = 4;
+    TRANSFER_UP_NODE = 5;
+    TRANDFER_DOWN_NODE = 6;
+    ID_GENERATOR = 7;
+}

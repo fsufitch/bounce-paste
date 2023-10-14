@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+service ShortIdGenerator {
+	rpc GetNextShortId (GetNextShortIdRequest) returns (GetNextShortIdResponse) {}
+}
+
+message GetNextShortIdRequest {}
+
+message GetNextShortIdResponse {
+    string short_id = 1;
+    google.protobuf.Timestamp timestamp = 2;
+}
