@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/fsufitch/bounce-paste/proto";
+package bouncepaste;
+
+message Greeting {
+    string name = 1;
+    google.protobuf.Timestamp timestamp = 2;
+    uint64 excitementLevel = 3;
+}

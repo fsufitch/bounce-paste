@@ -22,7 +22,7 @@
     "debugAdapter": "dlv-dap"
   },
   "gopls": {
-    "build.directoryFilters": ["-", "+backend"],
+    // "build.directoryFilters": ["-", "+backend"],
     "formatting.local": "github.com/fsufitch/bounce-paste",
     "build.expandWorkspaceToModule": true,
     "verboseOutput": true,

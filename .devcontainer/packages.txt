@@ -6,6 +6,7 @@ gzip
 gnupg2
 hostname
 htop
+make
 man-db
 net-tools
 python3
