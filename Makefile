@@ -3,7 +3,7 @@ default: all
 
 
 ##### COMMAND-LIKE PHONY TARGETS #####
-.PHONY: all clean clean-bin clean-webapp clean-proto
+.PHONY: all clean clean-bin clean-webapp clean-proto wire
 all: hello id-generator
 
 clean: clean-bin clean-webapp clean-proto
@@ -17,9 +17,11 @@ clean-webapp:
 clean-proto:
 	rm -rf proto/*.pb.go proto/.sentinel
 
+wire:
+	wire ./...
 
 ##### SHORTCUT PHONY TARGETS #####
-.PHONY: hello
+.PHONY: hello id-generator proto-go
 
 hello: bin/hello
 
