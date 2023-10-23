@@ -35,11 +35,12 @@ GO_BUILD_DEPS := proto-go go.mod go.sum $(shell find . -type f -name "*.go")
 
 ### ID generator
 bin/bounce-id-generator: ${GO_BUILD_DEPS}
+	wire ./id-generator/main
 	go build -o bin/bounce-id-generator ./id-generator/main/
 
 bin/hello: ${GO_BUILD_DEPS}
+	wire ./helloworld
 	go build -o bin/bounce-hello ./helloworld
-
 
 PROTO_SOURCES := $(shell find proto -type f -name "*.proto")
 proto/.sentinel: ${PROTO_SOURCES}
