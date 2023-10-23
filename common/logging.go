@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"os"
+	"strconv"
 	"strings"
 )
 
@@ -24,11 +24,11 @@ type LogLevel int
 
 const (
 	LogLevelUnknown  LogLevel = 0
-	LogLevelDebug             = iota
-	LogLevelInfo              = iota
-	LogLevelWarning           = iota
-	LogLevelError             = iota
-	LogLevelCritical          = iota
+	LogLevelDebug    LogLevel = iota
+	LogLevelInfo     LogLevel = iota
+	LogLevelWarning  LogLevel = iota
+	LogLevelError    LogLevel = iota
+	LogLevelCritical LogLevel = iota
 )
 
 var LogLevelNames = map[LogLevel]string{
@@ -43,19 +43,18 @@ func ParseLogLevel(text string) (LogLevel, error) {
 	text = strings.TrimSpace(text)
 	text = strings.ToUpper(text)
 
-	levelValue :=  strconv.ParseInt(text, 10, 0)
-	switch levelValue {
+	levelValue, _ := strconv.ParseInt(text, 10, 0)
+	switch LogLevel(levelValue) {
 	case 0:
 		// Nothing, means the value wasn't text
 	case LogLevelDebug, LogLevelInfo, LogLevelWarning, LogLevelError, LogLevelCritical:
-		return parsedLevelValue, nil
+		return LogLevel(levelValue), nil
 	default:
-		return LogLevelUnknown, fmt.Errorf("received bad log level number: %d", )
+		return LogLevelUnknown, fmt.Errorf("received bad log level number: %d", levelValue)
 	}
 
-	
 	for level, name := range LogLevelNames {
-		if level == levelValue || name == text {
+		if int64(level) == levelValue || name == text {
 			return level, nil
 		}
 	}
@@ -80,24 +79,22 @@ func ProvideLogLevel(debugMode DebugMode, environ Environ) LogLevel {
 	envLogLevelString, _ := environ.GetString("LOG_LEVEL")
 	if envLogLevelString != "" {
 		envLogLevel, err := ParseLogLevel(envLogLevelString)
-		if  err == nil {
+		if err == nil {
 			return envLogLevel
-		} 
-		fmt.Fprintln(os.Stderr, "error parsing LOG_LEVEL: %s; %v", envLogLevelString, err)
+		}
+		confWarningLogger.Printf("error parsing LOG_LEVEL: %s; %v\n", envLogLevelString, err)
 	}
 
-	fmt.Fprintln(os.Stderr, "using default log level: %s", defaultLogLevel.Name())
+	confWarningLogger.Printf("using default log level: %s", defaultLogLevel.Name())
 	return defaultLogLevel
 }
-
-
 
 const debugLogFlags = log.Lmsgprefix | log.Ldate | log.Ltime | log.Lmicroseconds | log.Llongfile
 const nonDebugLogFlags = log.Lmsgprefix | log.Ldate | log.Ltime
 
 type Logger struct {
-	wrapped log.Logger
-	level LogLevel
+	wrapped *log.Logger
+	level   LogLevel
 }
 
 func ProvideLogger(writer LogWriter, prefix LogPrefix, debugMode DebugMode, logLevel LogLevel) Logger {
@@ -106,8 +103,50 @@ func ProvideLogger(writer LogWriter, prefix LogPrefix, debugMode DebugMode, logL
 		flags = debugLogFlags
 	}
 
-	return Logger {
-		wrapped: log.New(writer, prefix, flags),
-		level: logLevel,
+	return Logger{
+		wrapped: log.New(writer, string(prefix), flags),
+		level:   logLevel,
 	}
+}
+
+func (logger Logger) Logf(callDepth int, level LogLevel, format string, args ...any) {
+	if level < logger.level {
+		return
+	}
+
+	formatWithLevel := fmt.Sprintf("[%s] %s", level.Name(), format)
+	message := fmt.Sprintf(formatWithLevel, args...)
+	// logger.wrapped.Print(message)
+	logger.wrapped.Output(callDepth+2, message)
+
+	if level >= LogLevelCritical {
+		panic("received critical signal")
+	}
+}
+
+func (logger Logger) Debugf(format string, args ...any) {
+	logger.Logf(1, LogLevelDebug, format, args...)
+}
+
+func (logger Logger) Infof(format string, args ...any) {
+	logger.Logf(1, LogLevelInfo, format, args...)
+}
+
+func (logger Logger) Warningf(format string, args ...any) {
+	logger.Logf(1, LogLevelWarning, format, args...)
+}
+
+func (logger Logger) Errorf(format string, args ...any) {
+	logger.Logf(1, LogLevelError, format, args...)
+}
+
+func (logger Logger) Criticalf(format string, args ...any) {
+	logger.Logf(1, LogLevelCritical, format, args...)
+}
+
+var confWarningLogger *log.Logger = log.Default()
+
+func init() {
+	confWarningLogger = log.Default()
+	confWarningLogger.SetPrefix("[conf warning]")
 }

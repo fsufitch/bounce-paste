@@ -1,6 +1,10 @@
 syntax = "proto3";
 
+
 import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/fsufitch/bounce-paste/proto";
+package bouncepaste;
 
 service ShortIdGenerator {
 	rpc GetNextShortId (GetNextShortIdRequest) returns (GetNextShortIdResponse) {}

@@ -1,5 +1,8 @@
 syntax = "proto3";
 
+option go_package = "github.com/fsufitch/bounce-paste/proto";
+package bouncepaste;
+
 message ComponentIdentifier {
     string id = 1;
     ComponentRole role = 2;

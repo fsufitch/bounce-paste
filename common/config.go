@@ -14,7 +14,7 @@ var ErrEnvironmentBadValue = errors.New("bad env value")
 
 type Environ map[string]string
 
-func EnvironFromProcessEnviron() (Environ, error) {
+func ProvideEnvironFromProcessEnvironment() (Environ, error) {
 	env := Environ{}
 	for _, envStr := range os.Environ() {
 		parts := strings.SplitN(envStr, "=", 2)
@@ -57,6 +57,6 @@ func (environ Environ) GetBool(key string) bool {
 
 type DebugMode bool
 
-func GetDebugModeFromEnviron(environ Environ) DebugMode {
+func ProvideDebugMode(environ Environ) DebugMode {
 	return DebugMode(environ.GetBool("DEBUG"))
 }
