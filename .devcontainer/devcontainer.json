@@ -4,10 +4,6 @@
   // See: https://containers.dev/implementors/json_reference/#compose-specific
   "dockerComposeFile": "../docker-compose.dev.yml",
   "service": "devcontainer",
-  "runServices": [
-    "rabbitmq",
-    "db"
-  ],
   "workspaceFolder": "/bounce-paste",
   // Runtime arguments
   "overrideCommand": true,

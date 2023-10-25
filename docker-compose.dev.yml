@@ -5,22 +5,37 @@ services:
       target: devcontainer
     volumes:
       - ./:/bounce-paste
+    depends_on:
+      - db
+      - mq
     networks:
-      - bounce-dev
-
-  rabbitmq:
-    extends:
-      file: docker-compose.yml
-      service: rabbitmq
-    networks:
-      - bounce-dev
+      - bounce
+    environment:
+      - DB_HOST=db
+      - DB_USER=bounce
+      - DB_PASSWORD=notforprod
+      - DB_NAME=bouncedb
+      - MQ_HOST=mq
+      - MQ_USER=bounce
+      - MQ_PASSWORD=notforprod
 
   db:
     extends:
-      file: docker-compose.yml
+      file: docker-compose.common.yml
       service: db
-    networks:
-      - bounce-dev
+    environment:
+      - POSTGRES_USER=bounce
+      - POSTGRES_PASSWORD=notforprod
+      - POSTGRES_DB=bouncepaste
+
+  mq:
+    extends:
+      file: docker-compose.common.yml
+      service: mq
+    environment:
+      - RABBITMQ_NODENAME=rabbit@mq
+      - RABBITMQ_DEFAULT_USER=bounce
+      - RABBITMQ_DEFAULT_PASSWORD=notforprod
 
 networks:
-  bounce-dev:
+  bounce:

@@ -1,0 +1,15 @@
+services:
+  mq:
+    build:
+      context: rabbitmq
+    hostname: mq
+    networks:
+      - bounce
+
+  db:
+    image: postgres:16
+    networks:
+      - bounce
+
+networks:
+  bounce:
