@@ -69,7 +69,7 @@ func (ll LogLevel) Name() string {
 	return fmt.Sprintf("INVALID_LOG_LEVEL_%d", ll)
 }
 
-const defaultLogLevel = LogLevelWarning
+const defaultLogLevel = LogLevelInfo
 
 func ProvideLogLevel(debugMode DebugMode, environ Environ) LogLevel {
 	if debugMode {

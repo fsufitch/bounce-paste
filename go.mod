@@ -10,6 +10,7 @@ require (
 )
 
 require (
+	github.com/Azure/go-amqp v1.0.2 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/subcommands v1.0.1 // indirect

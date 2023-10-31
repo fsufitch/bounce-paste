@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -38,7 +39,12 @@ func main() {
 	os.Exit(0)
 }
 
+func ProvideServerContext(log common.Logger) (idgenerator.ServerContext, error) {
+	return common.ContextWithInterruptCancel(log, context.Background())
+}
+
 var IdGeneratorServerWireSet = wire.NewSet(
+	ProvideServerContext,
 	idgenerator.WireSet,
 	common.WireSet,
 	wire.InterfaceValue(new(common.LogWriter), os.Stdout),

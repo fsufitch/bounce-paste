@@ -9,6 +9,7 @@ package main
 import (
 	"github.com/fsufitch/bounce-paste/common"
 	"github.com/fsufitch/bounce-paste/id-generator"
+	"github.com/fsufitch/bounce-paste/mq"
 	"os"
 )
 
@@ -24,8 +25,19 @@ func InitializeServer() (*idgenerator.Server, func(), error) {
 	debugMode := common.ProvideDebugMode(environ)
 	logLevel := common.ProvideLogLevel(debugMode, environ)
 	logger := common.ProvideLogger(logWriter, logPrefix, debugMode, logLevel)
+	serverContext, err := ProvideServerContext(logger)
+	if err != nil {
+		return nil, nil, err
+	}
+	config, err := mq.ProvideConfigFromEnviron(logger, environ)
+	if err != nil {
+		return nil, nil, err
+	}
+	mqMQ := mq.ProvideMQ(config, logger)
 	server := &idgenerator.Server{
-		Log: logger,
+		Context: serverContext,
+		Log:     logger,
+		MQ:      mqMQ,
 	}
 	return server, func() {
 	}, nil
